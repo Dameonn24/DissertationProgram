@@ -36,24 +36,24 @@ public class AppiumTrialLevel2 {
         caps.setCapability("connectHardwareKeyboard", true);
 
         AndroidDriver driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
-        
+
     }
 
-    //START OF TESTS
-    
+    // START OF TESTS
+
     @Test
     public void LoginPageSuccess() {
-        WebElement el5 = driver.findElement(AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[1]"));
-        el5.sendKeys("username");
-        WebElement el7 = driver.findElement(AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[2]"));
-        el7.sendKeys("password");
-        WebElement el8 = driver.findElement(AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.widget.Button"));
-        el8.click();
-        WebElement el9 = driver.findElement(AppiumBy.xpath("//android.widget.TextView[@text=\"Welcome test\"]"));
-        Assert.assertEquals(el9.getText(), "Welcome username");
+        WebElement username = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/usernameTextField"));
+        username.sendKeys("dimbo");
+        WebElement password = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/passwordTextField"));
+        password.sendKeys("dimbo");
+        WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
+        submit.click();
+        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
+        assert successMsg.getText().equals("Welcome dimbo!");
     }
 
-    //END OF TESTS
+    // END OF TESTS
 
     @After
     public void tearDown() {

@@ -50,10 +50,10 @@ public class AppiumTrialLevel3 {
         // Login Page Tests
         @Test
         public void LoginPageError() {
-                WebElement submit = driver.findElement(AppiumBy.xpath(
-                                "//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]/android.widget.Button"));
+                WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
                 submit.click();
                 Assert.assertEquals(submit.getText(), "Please fill in all the fields");
+                assert submit.getText().equals("Please fill in all the fields");
         }
 
         // SignUp Page Tests
