@@ -39,37 +39,36 @@ def getTestCasesName(testTokens, testCounter):
 
     return testName
 
-
 #isolate the name of the variables
 def getTestCaseVariables(testTokens):
     keywords = {'int', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'long', 'WebElement', 'val'}
     variableNames = []
     for i in range(len(testTokens)):
-        print (testTokens[i].value)
         if testTokens[i].value in keywords and testTokens[i+1].value.isidentifier():
             variableNames.append(testTokens[i+1].value)
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
             variableNames.append("XXX") #seperates the variable names in different test cases
     return variableNames
 
-
 #ioslate the xpath / id to the variable names
 def getVariableId(testTokens):
-    variableIDKeywords = {'id', 'xpath'}
+    #variableIDKeywords = {'id', 'xpath'}
     appiumVariableLocatorsJargon = {'By', 'AppiumBy'}
     variableIds = []
     flag = False
-    fullToken = ""
+    fullIdToken = ""
     for i in range (len(testTokens)):
         if testTokens[i].value in appiumVariableLocatorsJargon and testTokens[i+1].value == ".":
             flag = True
-        if testTokens[i].value == "":
-            flag = False
-            variableIds.append(fullToken)
         if flag == True:
-            #if testTokens[i] in variableIDKeywords
-            fullToken = fullToken + testTokens[i].value
-            print(fullToken)
+            fullIdToken = fullIdToken + testTokens[i].value
+        if testTokens[i].value == ")" and flag == True:
+            variableIds.append(fullIdToken)
+            flag = False
+            fullIdToken = ""
+        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
+            variableIds.append("XXX") 
+            
     return variableIds
 
 #isolate the actions performed by the variables
@@ -101,7 +100,7 @@ def getVariableActions(testTokens):
 
 
 #TESTING
-print(getVariableActions(testTokens))
-#print(getVariableId(testTokens))
+#print(getVariableActions(testTokens))
+print(getVariableId(testTokens))
 #print(getTestCaseVariables(testTokens))
 #print(getTestCasesName(testTokens,testCounter))
