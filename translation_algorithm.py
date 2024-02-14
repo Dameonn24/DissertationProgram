@@ -97,7 +97,11 @@ def getVariableActions(testTokens):
     return actions
 
 #isolate assertions
-
+def getAssertions(testTokens):
+    assertions = []
+    keywords = {'Assertions', 'assert','assertEquals','equals'}
+    
+    return assertions
 
 #TESTING
 #print(getVariableActions(testTokens))
