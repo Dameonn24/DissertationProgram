@@ -13,7 +13,7 @@ with open(file, 'r') as file:
   
 # Isolate all the test cases from the appium test file.         
 testTokens = [] #holds all the tests in the test case
-flag = False
+flag = False 
 testCounter = 0
 for i in range (len(alltokens)):
     if alltokens[i].value == "@" and alltokens[i+1].value == "Test":
@@ -38,7 +38,7 @@ def getTestCasesName(testTokens, testCounter):
             i += 1
 
     return testName
-print(getTestCasesName(testTokens,testCounter))
+
 
 #isolate the name of the variables
 def getTestCaseVariables(testTokens):
@@ -51,7 +51,7 @@ def getTestCaseVariables(testTokens):
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
             variableNames.append("XXX") #seperates the variable names in different test cases
     return variableNames
-print(getTestCaseVariables(testTokens))
+
 
 #ioslate the xpath / id to the variable names
 def getVariableId(testTokens):
@@ -63,24 +63,36 @@ def getVariableId(testTokens):
     for i in range (len(testTokens)):
         if testTokens[i].value in appiumVariableLocatorsJargon and testTokens[i+1].value == ".":
             flag = True
+        if testTokens[i].value == "":
+            flag = False
+            variableIds.append(fullToken)
         if flag == True:
             #if testTokens[i] in variableIDKeywords
             fullToken = fullToken + testTokens[i].value
-        if testTokens[i].value == "}":
-            flag = False
-            variableIds.append(fullToken)
+            print(fullToken)
     return variableIds
-
-print(getVariableId(testTokens))
-
 
 #isolate the actions performed by the variables
 def getVariableActions(testTokens):
     keywords = {'sendKeys', 'click'} #add other outputs
     actions = []
+    flag = False
+    action = ""
     for i in range(len(testTokens)):
         if testTokens[i].value == "."  and testTokens[i+1].value in keywords:
-            actions.append(testTokens[i+1].value)
+            if testTokens[i+1].value == "click":
+                action = "click()"
+                actions.append(action)
+                action = ""
+            if testTokens[i+1].value == "sendKeys":
+                flag = True
+        if flag == True:
+            action = action + testTokens[i].value
+        if testTokens[i].value == ")" and flag == True:
+            action = action[1:]
+            actions.append(action)
+            action = ""
+            flag = False
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
             actions.append("XXX")
     return actions
@@ -88,5 +100,8 @@ def getVariableActions(testTokens):
 #isolate assertions
 
 
+#TESTING
 print(getVariableActions(testTokens))
-
+#print(getVariableId(testTokens))
+#print(getTestCaseVariables(testTokens))
+#print(getTestCasesName(testTokens,testCounter))
