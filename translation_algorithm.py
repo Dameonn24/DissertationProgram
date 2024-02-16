@@ -23,7 +23,7 @@ for i in range (len(alltokens)):
     if flag == True:
         testTokens.append(alltokens[i])
 
-testName = [] #Store the name of the test case
+testNames = [] #Store the name of the test case
 variableNames = [] #store the variables used
 variableActions = [] #store the actions performed by the variables
 
@@ -33,10 +33,10 @@ def getTestCasesName(testTokens, testCounter):
     i = 0
     for j in range(len(testTokens)):
         if testTokens[j].value == "public" and testTokens[j+1].value == "void":
-            testName[i] = testTokens[j+2].value
+            testNames[i] = testTokens[j+2].value
             i += 1
 
-    return testName
+    return testNames
 
 #isolate the name of the variables
 def getVariableName(testTokens):
