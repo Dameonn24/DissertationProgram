@@ -9,7 +9,6 @@ with open(file, 'r') as file:
         if not line.strip().startswith('/*'):
             tokens = list(javalang.tokenizer.tokenize(line))
             alltokens.extend(tokens)
-        
   
 # Isolate all the test cases from the appium test file.         
 testTokens = [] #holds all the tests in the test case
@@ -40,7 +39,7 @@ def getTestCasesName(testTokens, testCounter):
     return testName
 
 #isolate the name of the variables
-def getTestCaseVariables(testTokens):
+def getVariableName(testTokens):
     keywords = {'int', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'long', 'WebElement', 'val'}
     variableNames = []
     for i in range(len(testTokens)):
@@ -97,14 +96,30 @@ def getVariableActions(testTokens):
     return actions
 
 #isolate assertions
-def getAssertions(testTokens):
+def getAssertions(testTokens,variableNames):
     assertions = []
-    keywords = {'Assertions', 'assert','assertEquals','equals'}
-    
+    flag = False
+    assertToken = ""
+    keywords = {'Assertions', 'assert'}
+    for i in range (len(testTokens)):
+        if testTokens[i].value in keywords:
+             flag = True
+             while testTokens[i].value not in variableNames:
+                i += 1
+        if flag == True:
+            assertToken = assertToken + testTokens[i].value
+        if testTokens[i].value == ")" and flag == True:
+            assertions.append(assertToken)
+            flag = False
+            assertToken = ""
+        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
+            assertions.append("XXX")
     return assertions
 
 #TESTING
 #print(getVariableActions(testTokens))
-print(getVariableId(testTokens))
-#print(getTestCaseVariables(testTokens))
+#print(getVariableId(testTokens))
+#print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens,testCounter))
+variableNames = getVariableName(testTokens)
+print(getAssertions(testTokens, variableNames))
