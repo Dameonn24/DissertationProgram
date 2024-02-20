@@ -53,7 +53,7 @@ public class AppiumTrialLevel3 {
                 WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
                 submit.click();
                 Assert.assertEquals(submit.getText(), "Please fill in all the fields");
-                assert submit.getText().equals("Please fill in all the fields");
+                // assert submit.getText().equals("Please fill in all the fields");
         }
 
         // SignUp Page Tests

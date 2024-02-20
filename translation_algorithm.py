@@ -100,21 +100,62 @@ def getAssertions(testTokens,variableNames):
     assertions = []
     flag = False
     assertToken = ""
-    keywords = {'Assertions', 'assert'}
+    keywords = {'Assert', 'assert'}
     for i in range (len(testTokens)):
         if testTokens[i].value in keywords:
              flag = True
+             #print(testTokens[i].value)
              while testTokens[i].value not in variableNames:
-                i += 1
+                 #print(testTokens[i].value)
+                 i += 1
         if flag == True:
+            #print("current token: ", testTokens[i].value)
+            #print ("current assertToken before: ", assertToken)
             assertToken = assertToken + testTokens[i].value
-        if testTokens[i].value == ")" and flag == True:
+            #print ("current assertToken after: ", assertToken)
+        if testTokens[i].value == ")" and testTokens[i+1].value == ";" and flag == True:
             assertions.append(assertToken)
             flag = False
             assertToken = ""
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
             assertions.append("XXX")
     return assertions
+
+'''
+assertionType = []
+assertionVariableName = []
+assertionAction = []
+assertionValue = []
+def getAssertionsTwo(testTokens, variableNames):
+    keywords = {'Assert','assert'}
+    assertionFlag = False
+    assertionValueFlag = False
+    currentAssertionValue = ""
+    for i in range (len(testTokens)):
+        currentToken = testTokens[i].value
+        if currentToken in keywords:
+            assertionFlag = True
+            if currentToken == "." and assertionFlag == True:
+                assertionType.append(testTokens[i+1])
+        if currentToken in variableNames and assertionFlag == True:
+            assertionVariableName.append(currentToken)
+            if assertionVariableName and currentToken == "." and assertionFlag == True:
+                assertionAction.append (testTokens[i+1])
+        if currentToken == '"' and assertionFlag == True:
+            assertionValueFlag = True
+        if assertionValueFlag == True and assertionFlag == True:
+            currentAssertionValue = currentAssertionValue + currentToken
+        if currentToken == '"' and assertionFlag == True and assertionValueFlag == True:
+            assertionValue.append(currentAssertionValue)
+            currentAssertionValue = ""
+            assertionValueFlag = False
+        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
+            assertionType.append("XXX")
+            assertionVariableName.append("XXX")
+            assertionAction.append("XXX")
+            assertionValue.append("XXX")
+    return assertionType, assertionVariableName, assertionAction, assertionValue
+'''
 
 #TESTING
 #print(getVariableActions(testTokens))
