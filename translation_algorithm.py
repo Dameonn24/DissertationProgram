@@ -1,6 +1,8 @@
 import javalang
 import javalang.tokenizer
 
+# APPIUM-JAVA DECODER
+
 #Convert the java file into a full list of tokens
 alltokens=[]
 file = "AppiumTrialLevel3.java"
@@ -13,11 +15,9 @@ with open(file, 'r') as file:
 # Isolate all the test cases from the appium test file.         
 testTokens = [] #holds all the tests in the test case
 flag = False 
-testCounter = 0
 for i in range (len(alltokens)):
     if alltokens[i].value == "@" and alltokens[i+1].value == "Test":
         flag = True
-        testCounter += 1 #counts how many test cases are there in the file
     if alltokens[i].value == "}":
         flag = False
     if flag == True:
@@ -28,15 +28,12 @@ variableNames = [] #store the variables used
 variableActions = [] #store the actions performed by the variables
 
 #isolate the names of the test cases
-def getTestCasesName(testTokens, testCounter):
-    testName = [''] * testCounter
-    i = 0
-    for j in range(len(testTokens)):
-        if testTokens[j].value == "public" and testTokens[j+1].value == "void":
-            testNames[i] = testTokens[j+2].value
-            i += 1
-
-    return testNames
+def getTestCasesName(testTokens):
+    testCasesName = []
+    for i in range (len(testTokens)):
+        if testTokens[i].value == "public" and testTokens[i+1].value == "void":
+            testCasesName.append(testTokens[i+2].value)
+    return testCasesName
 
 #isolate the name of the variables
 def getVariableName(testTokens):
@@ -161,6 +158,63 @@ def getAssertionsTwo(testTokens, variableNames):
 #print(getVariableActions(testTokens))
 #print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
-#print(getTestCasesName(testTokens,testCounter))
+#print(getTestCasesName(testTokens))
+#variableNames = getVariableName(testTokens)
+#print(getAssertions(testTokens, variableNames))
+
+
+# ESPRESSO-KOTLIN ENCODER
+
+# Convert the test tokens into Espresso-Kotlin code
+espressoCode = """import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.*
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@LargeTest
+@RunWith(AndroidJUnit4::class)
+class EspressoTests {
+
+    @Rule
+    @JvmField
+    var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java) """
+
+testNames = getTestCasesName(testTokens)
 variableNames = getVariableName(testTokens)
-print(getAssertions(testTokens, variableNames))
+variableActions = getVariableActions(testTokens)
+variableIds = getVariableId(testTokens)
+
+eof = False
+i=0
+j=0
+while i < len(testNames):
+    currentTestCase = "\n\n    @Test\n    fun " + testNames[i] + "(){\n"
+    while j < len(variableNames):
+        if variableNames[j] == "XXX":
+            break
+        currentTestCase = currentTestCase + "        val " + variableNames[j] + " = onView(withId(R.id."+ variableIds[j]+"))\n"+ "        " + variableNames[j]+variableActions[j] + "\n"
+        j += 1
+    espressoCode = espressoCode + currentTestCase
+    i += 1
+    j += 1
+
+
+# Write the Espresso-Kotlin code to a file
+outputFile = "test_espresso_code.kt"
+with open(outputFile, 'w+') as file:
+    file.writelines(espressoCode)
+
+#print(espressoCode)
+
+'''
+# Write the Espresso-Kotlin code to a file
+outputFile = "/u:/ManW10/Desktop/Dissertation/DissertationProgram/espresso_code.kt"
+with open(outputFile, 'w') as file:
+    file.write(espressoCode)
+'''
