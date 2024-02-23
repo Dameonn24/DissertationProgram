@@ -48,48 +48,56 @@ def getVariableName(testTokens):
 
 #ioslate the xpath / id to the variable names
 def getVariableId(testTokens):
-    #variableIDKeywords = {'id', 'xpath'}
-    appiumVariableLocatorsJargon = {'By', 'AppiumBy'}
+    variableIDKeywords = {'id', 'xpath'}
+    #appiumVariableLocatorsJargon = {'By', 'AppiumBy'}
     variableIds = []
-    flag = False
     fullIdToken = ""
+    variableactualpath = ""
     for i in range (len(testTokens)):
-        if testTokens[i].value in appiumVariableLocatorsJargon and testTokens[i+1].value == ".":
-            flag = True
-        if flag == True:
-            fullIdToken = fullIdToken + testTokens[i].value
-        if testTokens[i].value == ")" and flag == True:
-            variableIds.append(fullIdToken)
+        if testTokens[i].value == "id" and testTokens[i+1].value == "(":
+            #print(testTokens[i+2])
+            variablepath = testTokens[i+2].value
+            #print(variablepath)
             flag = False
-            fullIdToken = ""
+            for j in range (len(variablepath)):
+                #print(variablepath[j])
+                if variablepath[j] == "\"":
+                    flag = False
+                    variableIds.append(variableactualpath)
+                    variableactualpath = ""
+                if flag == True:
+                    variableactualpath = variableactualpath + variablepath[j]
+                if variablepath[j] == "/":
+                    flag = True
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            variableIds.append("XXX") 
-            
+            variableIds.append("XXX")
+            flag = False       
+    variableIds = [x for x in variableIds if x != '']
     return variableIds
 
-#isolate the actions performed by the variables
-def getVariableActions(testTokens):
-    keywords = {'sendKeys', 'click'} #add other outputs
-    actions = []
-    flag = False
-    action = ""
-    for i in range(len(testTokens)):
-        if testTokens[i].value == "."  and testTokens[i+1].value in keywords:
-            if testTokens[i+1].value == "click":
-                action = "click()"
+    #isolate the actions performed by the variables
+    def getVariableActions(testTokens):
+        keywords = {'sendKeys', 'click'} #add other outputs
+        actions = []
+        flag = False
+        action = ""
+        for i in range(len(testTokens)):
+            if testTokens[i].value == "."  and testTokens[i+1].value in keywords:
+                if testTokens[i+1].value == "click":
+                    action = "click()"
+                    actions.append(action)
+                    action = ""
+                if testTokens[i+1].value == "sendKeys":
+                    flag = True
+            if flag == True:
+                action = action + testTokens[i].value
+            if testTokens[i].value == ")" and flag == True:
+                action = action[1:]
                 actions.append(action)
                 action = ""
-            if testTokens[i+1].value == "sendKeys":
-                flag = True
-        if flag == True:
-            action = action + testTokens[i].value
-        if testTokens[i].value == ")" and flag == True:
-            action = action[1:]
-            actions.append(action)
-            action = ""
-            flag = False
-        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            actions.append("XXX")
+                flag = False
+            if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
+                actions.append("XXX")
     return actions
 
 #isolate assertions
@@ -118,45 +126,9 @@ def getAssertions(testTokens,variableNames):
             assertions.append("XXX")
     return assertions
 
-'''
-assertionType = []
-assertionVariableName = []
-assertionAction = []
-assertionValue = []
-def getAssertionsTwo(testTokens, variableNames):
-    keywords = {'Assert','assert'}
-    assertionFlag = False
-    assertionValueFlag = False
-    currentAssertionValue = ""
-    for i in range (len(testTokens)):
-        currentToken = testTokens[i].value
-        if currentToken in keywords:
-            assertionFlag = True
-            if currentToken == "." and assertionFlag == True:
-                assertionType.append(testTokens[i+1])
-        if currentToken in variableNames and assertionFlag == True:
-            assertionVariableName.append(currentToken)
-            if assertionVariableName and currentToken == "." and assertionFlag == True:
-                assertionAction.append (testTokens[i+1])
-        if currentToken == '"' and assertionFlag == True:
-            assertionValueFlag = True
-        if assertionValueFlag == True and assertionFlag == True:
-            currentAssertionValue = currentAssertionValue + currentToken
-        if currentToken == '"' and assertionFlag == True and assertionValueFlag == True:
-            assertionValue.append(currentAssertionValue)
-            currentAssertionValue = ""
-            assertionValueFlag = False
-        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            assertionType.append("XXX")
-            assertionVariableName.append("XXX")
-            assertionAction.append("XXX")
-            assertionValue.append("XXX")
-    return assertionType, assertionVariableName, assertionAction, assertionValue
-'''
-
 #TESTING
 #print(getVariableActions(testTokens))
-#print(getVariableId(testTokens))
+print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens))
 #variableNames = getVariableName(testTokens)
@@ -164,7 +136,7 @@ def getAssertionsTwo(testTokens, variableNames):
 
 
 # ESPRESSO-KOTLIN ENCODER
-
+'''
 # Convert the test tokens into Espresso-Kotlin code
 espressoCode = """import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -212,9 +184,9 @@ with open(outputFile, 'w+') as file:
 
 #print(espressoCode)
 
-'''
 # Write the Espresso-Kotlin code to a file
-outputFile = "/u:/ManW10/Desktop/Dissertation/DissertationProgram/espresso_code.kt"
+outputFile = "espresso_code.kt"
 with open(outputFile, 'w') as file:
     file.write(espressoCode)
+
 '''
