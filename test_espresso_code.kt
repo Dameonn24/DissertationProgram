@@ -18,22 +18,38 @@ class EspressoTests {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java) 
 
     @Test
-    fun LoginPageError(){
-        val submit = onView(withId(R.id.AppiumBy.id("com.example.dissertationdummyapp:id/submitButton")))
-        submitclick()
+    fun LoginSuccess(){
+        val username = onView(withId(R.id.usernameTextField))
+        
+        val password = onView(withId(R.id.passwordTextField))
+        
+        val submit = onView(withId(R.id.submitButton))
+        
+        val successMsg = onView(withId(R.id.successMsg))
+        
 
 
     @Test
-    fun SignUpPageSuccess(){
-        val email = onView(withId(R.id.AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[1]")))
-        emailsendKeys("email@email.com")
-        val username = onView(withId(R.id.AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[2]")))
-        usernamesendKeys("username")
-        val password = onView(withId(R.id.AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[3]")))
-        passwordsendKeys("password")
-        val cpassword = onView(withId(R.id.AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.widget.EditText[4]")))
-        cpasswordsendKeys("password")
-        val signUpButton = onView(withId(R.id.AppiumBy.xpath("//androidx.compose.ui.platform.ComposeView/android.view.View/android.view.View/android.view.View[1]")))
-        signUpButtonclick()
-        val successMessage = onView(withId(R.id.AppiumBy.xpath("//android.widget.TextView[@text=\"Welcome test\"]")))
-        successMessageXXX
+    fun LoginFailure(){
+        val submit = onView(withId(R.id.submitButton))
+        
+        val successMsg = onView(withId(R.id.successMsg))
+        
+
+
+    @Test
+    fun SignUpPageSucess(){
+        val el1 = onView(withId(R.id.signupbutton))
+        
+        val el2 = onView(withId(R.id.emailTextField))
+        
+        val el3 = onView(withId(R.id.usernameTextField))
+        
+        val el4 = onView(withId(R.id.passwordTextField))
+        
+        val el5 = onView(withId(R.id.confirmpTextField))
+        
+        val el6 = onView(withId(R.id.submitButton))
+        
+        val el7 = onView(withId(R.id.successMsg))
+        

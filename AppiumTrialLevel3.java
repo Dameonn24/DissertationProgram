@@ -34,21 +34,21 @@ public class TestAppium {
                 .amend("appium:newCommandTimeout", 3600)
                 .amend("appium:connectHardwareKeyboard", true);
 
-    /*
-        driver = new AndroidDriver((this.getUrl()), options);
+        /*
+         * driver = new AndroidDriver((this.getUrl()), options);
+         * }
+         * 
+         * private URL getUrl() {
+         * try {
+         * return new URL("http://143.167.122.152:4723/");
+         * } catch (MalformedURLException e) {
+         * e.printStackTrace();
+         * }
+         * return null;
+         * }
+         */
+        driver = new AndroidDriver(this.getUrl(), options);
     }
-
-    private URL getUrl() {
-        try {
-            return new URL("http://143.167.122.152:4723/");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-*/
-    driver = new AndroidDriver(this.getUrl(), options);
-}
 
     private URL getUrl() {
         try {
@@ -68,11 +68,11 @@ public class TestAppium {
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
-        Assert.assertEquals(successMsg.getText(),"welcome dimbo!");
+        Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
     }
 
     @Test
-    public void LoginFailure(){
+    public void LoginFailure() {
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
@@ -80,7 +80,7 @@ public class TestAppium {
     }
 
     @Test
-    public void SignUpPageSucess(){
+    public void SignUpPageSucess() {
         WebElement el1 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/signupbutton"));
         el1.click();
         WebElement el2 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/emailTextField"));
@@ -103,4 +103,3 @@ public class TestAppium {
         driver.quit();
     }
 }
-
