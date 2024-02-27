@@ -23,9 +23,6 @@ for i in range (len(alltokens)):
     if flag == True:
         testTokens.append(alltokens[i])
 
-testNames = [] #Store the name of the test case
-variableNames = [] #store the variables used
-variableActions = [] #store the actions performed by the variables
 
 #isolate the names of the test cases
 def getTestCasesName(testTokens):
@@ -43,7 +40,7 @@ def getVariableName(testTokens):
         if testTokens[i].value in keywords and testTokens[i+1].value.isidentifier():
             variableNames.append(testTokens[i+1].value)
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            variableNames.append("XXX") #seperates the variable names in different test cases
+            variableNames.append("ENDOFTESTCASE") #seperates the variable names in different test cases
     return variableNames
 
 #ioslate the xpath / id to the variable names
@@ -65,40 +62,56 @@ def getVariableId(testTokens):
                     flag = False
                     variableIds.append(variableactualpath)
                     variableactualpath = ""
-                if flag == True:
+                if flag:
                     variableactualpath = variableactualpath + variablepath[j]
                 if variablepath[j] == "/":
                     flag = True
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            variableIds.append("XXX")
+            variableIds.append("ENDOFTESTCASE")
             flag = False       
     variableIds = [x for x in variableIds if x != '']
     return variableIds
 
-    #isolate the actions performed by the variables
+#isolate the actions performed by the variables
 def getVariableActions(testTokens):
     keywords = {'sendKeys', 'click'} #add other outputs
     actions = []
+    actionsValue = []
     flag = False
     action = ""
+    actionName = ""
+    actionValue = ""
     for i in range(len(testTokens)):
         if testTokens[i].value == "."  and testTokens[i+1].value in keywords:
             if testTokens[i+1].value == "click":
-                action = "click()"
-                actions.append(action)
-                action = ""
+                actions.append("click()")
+                actionsValue.append("NOACTION")
             if testTokens[i+1].value == "sendKeys":
                 flag = True
+                actionName = "sendKeys()"
         if flag == True:
             action = action + testTokens[i].value
         if testTokens[i].value == ")" and flag == True:
             action = action[1:]
-            actions.append(action)
+            newFlag = False
+            for char in action: #this loop is to extract the action text that is being sent into the app
+                if char == '(':
+                    newFlag = True
+                if newFlag and char == ')':
+                    newFlag = False
+                if newFlag:
+                    actionValue += char
+            actions.append(actionName)
+            actionValue = actionValue[2:-1] #formatting to remove the ""
+            actionsValue.append(actionValue)
             action = ""
+            actionName = ""
+            actionValue = ""
             flag = False
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            actions.append("XXX")
-    return actions
+            actions.append("ENDOFTESTCASE")
+            actionsValue.append("ENDOFTESTCASE")
+    return actions, actionsValue
 
 #isolate assertions
 def getAssertions(testTokens,variableNames):
@@ -123,26 +136,27 @@ def getAssertions(testTokens,variableNames):
             flag = False
             assertToken = ""
         if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            assertions.append("XXX")
+            assertions.append("ENDOFTESTCASE")
     return assertions
 
 #TESTING
-#print(getVariableActions(testTokens))
+print(getVariableActions(testTokens))
 #print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens))
 #variableNames = getVariableName(testTokens)
 #print(getAssertions(testTokens, variableNames))
 
+x=""
 kotlinActionTranslations = {
-    "sendKeys" : "replaceText(\"x\"), closeSoftKeyboard()",
+    "sendKeys()" : "replaceText(\""+x+"\"), closeSoftKeyboard()",
     "click()" : "click()"
 }
 
 # ESPRESSO-KOTLIN ENCODER
-def getKotlinTranslatedActions(variableActions):
-    
-
+def getKotlinTranslatedActions(actions, actionsValue, kotlinActionTranslations):
+    translatedActions = []
+    return translatedActions
 
 # Convert the test tokens into Espresso-Kotlin code
 espressoCode = """import androidx.test.espresso.Espresso.onView
@@ -166,19 +180,21 @@ class EspressoTests {
 
 testNames = getTestCasesName(testTokens)
 variableNames = getVariableName(testTokens)
-variableActions = getVariableActions(testTokens)
+variableActions, variableActionsValues = getVariableActions(testTokens)
 variableIds = getVariableId(testTokens)
-variableTranslatedActions = getKotlinTranslatedActions(getVariableActions(testTokens))
-
+variableTranslatedAction = getKotlinTranslatedActions(variableActions,variableActionsValues,kotlinActionTranslations)
+print(variableTranslatedAction)
+'''
 eof = False
 i=0
-j=0
+i = 0
+j = 0
 while i < len(testNames):
     currentTestCase = "\n\n    @Test\n    fun " + testNames[i] + "(){\n"
-    while j < len(variableNames):
-        if variableNames[j] == "XXX":
+    while j < len(variableNames) - 1:
+        if variableNames[j] == "ENDOFTESTCASE":
             break
-        currentTestCase = currentTestCase + "        val " + variableNames[j] + " = onView(withId(R.id."+ variableIds[j]+"))\n"+ "        " + variableNames[j] + ".perform(" + variableTranslatedAction[j]+"\n"
+        currentTestCase = currentTestCase + "        val " + variableNames[j] + " = onView(withId(R.id."+ variableIds[j]+"))\n"+ "        " + variableNames[j] + ".perform(" +variableTranslatedAction[j-1]+")\n"
         j += 1
     espressoCode = espressoCode + currentTestCase
     i += 1
@@ -189,4 +205,4 @@ while i < len(testNames):
 outputFile = "test_espresso_code.kt"
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
-
+'''
