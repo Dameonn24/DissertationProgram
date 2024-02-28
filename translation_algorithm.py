@@ -156,6 +156,14 @@ kotlinActionTranslations = {
 # ESPRESSO-KOTLIN ENCODER
 def getKotlinTranslatedActions(actions, actionsValue, kotlinActionTranslations):
     translatedActions = []
+    for i in range(len(actions)):
+        if actions[i] == "click()":
+            translatedActions.append("click()")
+        if actions[i] == "sendKeys()":
+            x = actionsValue[i]
+            translatedActions.append("replaceText(\""+x+"\"), closeSoftKeyboard()")
+        if actions[i] == "ENDOFTESTCASE":
+            translatedActions.append("ENDOFTESTCASE")
     return translatedActions
 
 # Convert the test tokens into Espresso-Kotlin code
@@ -189,15 +197,13 @@ eof = False
 i=0
 i = 0
 j = 0
-while i < len(testNames):
-    currentTestCase = "\n\n    @Test\n    fun " + testNames[i] + "(){\n"
-    while j < len(variableNames) - 1:
-        if variableNames[j] == "ENDOFTESTCASE":
-            break
-        currentTestCase = currentTestCase + "        val " + variableNames[j] + " = onView(withId(R.id."+ variableIds[j]+"))\n"+ "        " + variableNames[j] + ".perform(" +variableTranslatedAction[j-1]+")\n"
+for i in range(len(testNames)):
+    currentTestCase = f"\n\n    @Test\n    fun {testNames[i]}(){{\n"
+    while j < len(variableNames) and variableNames[j] != "ENDOFTESTCASE":
+        currentTestCase += f"        val {variableNames[j]} = onView(withId(R.id.{variableIds[j]}))\n"
+        currentTestCase += f"        {variableNames[j]}.perform({variableTranslatedAction[j]})\n"
         j += 1
-    espressoCode = espressoCode + currentTestCase
-    i += 1
+    espressoCode += currentTestCase
     j += 1
 
 
