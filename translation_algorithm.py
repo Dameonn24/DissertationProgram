@@ -23,7 +23,6 @@ for i in range (len(alltokens)):
     if flag == True:
         testTokens.append(alltokens[i])
 
-
 #isolate the names of the test cases
 def getTestCasesName(testTokens):
     testCasesName = []
@@ -75,6 +74,7 @@ def getVariableId(testTokens):
 #isolate the actions performed by the variables
 def getVariableActions(testTokens):
     keywords = {'sendKeys', 'click'} #add other outputs
+    assertKeywords = { 'Assert', 'assert'}
     actions = []
     actionsValue = []
     flag = False
@@ -82,6 +82,9 @@ def getVariableActions(testTokens):
     actionName = ""
     actionValue = ""
     for i in range(len(testTokens)):
+        if testTokens[i].value in assertKeywords:
+            actions.append("ASSERT")
+            actionsValue.append("ASSERT")
         if testTokens[i].value == "."  and testTokens[i+1].value in keywords:
             if testTokens[i+1].value == "click":
                 actions.append("click()")
@@ -115,57 +118,48 @@ def getVariableActions(testTokens):
 
 #isolate assertions
 def getAssertions(testTokens,variableNames):
-    assertions = []
-    flag = False
-    assertToken = ""
     keywords = {'Assert', 'assert'}
-    for i in range (len(testTokens)):
+    assertionType = [] #assertEquals / assertTrue / assertFalse / assertNull
+    assertionAction = [] # variableName.getText()
+    assertionValue = [] # store the expected message
+    
+    for i in range(len(testTokens)):
         if testTokens[i].value in keywords:
-             flag = True
-             #print(testTokens[i].value)
-             while testTokens[i].value not in variableNames:
-                 #print(testTokens[i].value)
-                 i += 1
-        if flag == True:
-            #print("current token: ", testTokens[i].value)
-            #print ("current assertToken before: ", assertToken)
-            assertToken = assertToken + testTokens[i].value
-            #print ("current assertToken after: ", assertToken)
-        if testTokens[i].value == ")" and testTokens[i+1].value == ";" and flag == True:
-            assertions.append(assertToken)
-            flag = False
-            assertToken = ""
-        if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
-            assertions.append("ENDOFTESTCASE")
-    return assertions
+            flag = True
+        if flag and testTokens[i+1].value == ".": #condition to find the assertionType
+            print(testTokens[i+2].value)
+            assertionType.append(testTokens[i+2].value)
+        while flag and testTokens[i].value not in variableNames:
+            i+=1
+        if flag and testTokens[i+1].value ==".":
+            print(testTokens[i+2].value)
+            assertion
+            
 
 #TESTING
-print(getVariableActions(testTokens))
+#print(getVariableActions(testTokens))
 #print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens))
 #variableNames = getVariableName(testTokens)
 #print(getAssertions(testTokens, variableNames))
 
-x=""
-kotlinActionTranslations = {
-    "sendKeys()" : "replaceText(\""+x+"\"), closeSoftKeyboard()",
-    "click()" : "click()"
-}
 
-# ESPRESSO-KOTLIN ENCODER
-def getKotlinTranslatedActions(actions, actionsValue, kotlinActionTranslations):
-    translatedActions = []
+#TRANSLATION
+def getKotlinTranslations(actions, actionsValue,assertion):
+    translations = []
     for i in range(len(actions)):
         if actions[i] == "click()":
-            translatedActions.append("click()")
+            translations.append("click()")
         if actions[i] == "sendKeys()":
             x = actionsValue[i]
-            translatedActions.append("replaceText(\""+x+"\"), closeSoftKeyboard()")
+            translations.append("replaceText(\""+x+"\"), closeSoftKeyboard()")
         if actions[i] == "ENDOFTESTCASE":
-            translatedActions.append("ENDOFTESTCASE")
-    return translatedActions
+            translations.append("ENDOFTESTCASE")
+    return translations 
 
+
+# ESPRESSO-KOTLIN ENCODER
 # Convert the test tokens into Espresso-Kotlin code
 espressoCode = """import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -190,9 +184,13 @@ testNames = getTestCasesName(testTokens)
 variableNames = getVariableName(testTokens)
 variableActions, variableActionsValues = getVariableActions(testTokens)
 variableIds = getVariableId(testTokens)
-variableTranslatedAction = getKotlinTranslatedActions(variableActions,variableActionsValues,kotlinActionTranslations)
-print(variableTranslatedAction)
-'''
+assertion = getAssertions(testTokens,variableNames)
+variableTranslatedAction = getKotlinTranslations(variableActions,variableActionsValues,assertion)
+print("Length of variableNames:", len(variableNames))
+print("Length of variableTranslatedAction:", len(variableTranslatedAction))
+print("content of variable names:", variableNames)
+print("Contents of variableTranslatedAction:", variableTranslatedAction)
+
 eof = False
 i=0
 i = 0
@@ -200,6 +198,7 @@ j = 0
 for i in range(len(testNames)):
     currentTestCase = f"\n\n    @Test\n    fun {testNames[i]}(){{\n"
     while j < len(variableNames) and variableNames[j] != "ENDOFTESTCASE":
+        print(j)
         currentTestCase += f"        val {variableNames[j]} = onView(withId(R.id.{variableIds[j]}))\n"
         currentTestCase += f"        {variableNames[j]}.perform({variableTranslatedAction[j]})\n"
         j += 1
@@ -211,4 +210,4 @@ for i in range(len(testNames)):
 outputFile = "test_espresso_code.kt"
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
-'''
+
