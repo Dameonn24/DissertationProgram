@@ -1,43 +1,58 @@
 import javalang
 import javalang.tokenizer
+from TestCase import TestCase
 
-# APPIUM-JAVA DECODER
+def tokenize_java_file(file_name):
+    alltokens = []
+    with open(file_name, 'r') as file:
+        for line in file:
+            if not line.strip().startswith('/*'):
+                tokens = list(javalang.tokenizer.tokenize(line))
+                alltokens.extend(tokens)
+    return alltokens
 
-#Convert the java file into a full list of tokens
-alltokens=[]
-file = "AppiumTrialLevel3.java"
-with open(file, 'r') as file:
-    for line in file:
-        if not line.strip().startswith('/*'):
-            tokens = list(javalang.tokenizer.tokenize(line))
-            alltokens.extend(tokens)
+def extract_test_cases(alltokens):
+    testTokens = []
+    flag = False 
+    for i in range (len(alltokens)):
+        if alltokens[i].value == "@" and alltokens[i+1].value == "Test":
+            flag = True
+        if alltokens[i].value == "}":
+            flag = False
+        if flag == True:
+            testTokens.append(alltokens[i])
+    return testTokens
 
-# Isolate all the test cases from the appium test file.         
-testTokens = [] #holds all the tests in the test case
-flag = False 
-for i in range (len(alltokens)):
-    if alltokens[i].value == "@" and alltokens[i+1].value == "Test":
-        flag = True
-    if alltokens[i].value == "}" and flag:
-        flag = False
-        testTokens.append("END OF TEST CASE")
-    if flag == True:
-        testTokens.append(alltokens[i].value)
+def getTestCaseNames(testTokens):
+    testCases = []
+    for i in range(len(testTokens)):
+        if testTokens[i].value == "public" and testTokens[i+1].value == "void":
+            test_case = TestCase()
+            test_case.name = testTokens[i+2].value
+            testCases.append(test_case)
+    return testCases
 
-#print(testTokens)
-
-class Test:
-    def __init__(self, testName, variableNames, variableActions, variableActionValues, assertionType, assertVariable, assertToMessage):
-        self.testName = testName
-        self.variableNames = variableNames
-        self.variableActions = variableActions
-        self.variableActionValues = variableActionValues
-        self.assertionType = assertionType
-        self.assertVariable = assertVariable
-        self.assertToMessage = assertToMessage
-        
-
-for test in tests:
-    test = Test()
+def getVariableNames(testTokens):
+    variables = []
+    keywords = ["int", "String", "float", "double", "boolean", "char", "WebElement", "val"]
+    for i in range(len(testTokens)):
+        if testTokens[i].value in keywords and testTokens[i+1].value == "=":
+            variables.append(testTokens[i+2].value)
+    return variables
 
 
+# Example usage
+file_name = "AppiumTrialLevel3.java"
+alltokens = tokenize_java_file(file_name)
+testTokens = extract_test_cases(alltokens)
+testCases = getTestCaseNames(testTokens)
+variables = getVariableNames(testTokens)
+
+for test_case in testCases:
+    print("Test Name:", test_case.name)
+    print("Variables:", test_case.variables)
+    print("Assertions:", test_case.assertions)
+    print("Actions:", test_case.actions)
+    print("\n")
+
+print("Variables:", variables)
