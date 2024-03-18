@@ -153,7 +153,7 @@ def getAssertions(testTokens,variableNames):
     return assertionType, assertionAction, assertionValue        
 
 #TESTING
-print(getVariableActions(testTokens))
+#print(getVariableActions(testTokens))
 #print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens))
@@ -233,10 +233,10 @@ translatedActions = getKotlinTranslatedActions(variableActions,variableActionsVa
 translatedAssertions = getKotlinTranslatedAssertions(assertionType, assertionAction, assertionValue)
 kotlinTranslations = getKotlinTranslations(variableNames, translatedActions, translatedAssertions)
 
-print("Length of variableNames:", len(variableNames))
-print("Length of kotlinTranslations:", len(kotlinTranslations))
-print("content of variable names:", variableNames)
-print("Contents of kotlinTranslations:", kotlinTranslations)
+#print("Length of variableNames:", len(variableNames))
+#print("Length of kotlinTranslations:", len(kotlinTranslations))
+#print("content of variable names:", variableNames)
+#print("Contents of kotlinTranslations:", kotlinTranslations)
 
 eof = False
 i=0
@@ -256,7 +256,7 @@ for i in range(len(testNames)):
 espressoCode += f"}}"
 
 # Write the Espresso-Kotlin code to a file
-outputFile = "test_espresso_code.kt"
+outputFile = "translatedCode.kt"
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
 
