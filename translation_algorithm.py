@@ -5,7 +5,7 @@ import javalang.tokenizer
 
 #Convert the java file into a full list of tokens
 alltokens=[]
-file = "AppiumTrialLevel3.java"
+file = "javaTests/AppiumTrialLevel3.java"
 with open(file, 'r') as file:
     for line in file:
         if not line.strip().startswith('/*'):
@@ -256,7 +256,7 @@ for i in range(len(testNames)):
 espressoCode += f"}}"
 
 # Write the Espresso-Kotlin code to a file
-outputFile = "translatedCode.kt"
+outputFile = "espressoTests/translatedCodev3.kt"
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
 
