@@ -42,7 +42,7 @@ def getVariableNames(testTokens):
 
 
 # Example usage
-file_name = "javaTests/AppiumTrialLevel3.java"
+file_name = "appiumTests/AppiumTrialLevel3.java"
 alltokens = tokenize_java_file(file_name)
 testTokens = extract_test_cases(alltokens)
 testCases = getTestCaseNames(testTokens)

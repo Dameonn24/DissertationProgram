@@ -5,7 +5,7 @@ import javalang.tokenizer
 
 #Convert the java file into a full list of tokens
 alltokens=[]
-file = "javaTests/AppiumTrialLevel3.java"
+file = "appiumTests/AppiumTrialLevel3.java"
 with open(file, 'r') as file:
     for line in file:
         if not line.strip().startswith('/*'):
