@@ -256,7 +256,7 @@ for i in range(len(testNames)):
 espressoCode += f"}}"
 
 # Write the Espresso-Kotlin code to a file
-outputFile = "espressoTests/translatedCodev3.kt"
+outputFile = "espressoTests/translatedCodev4.kt"
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
 
