@@ -154,7 +154,7 @@ def getAssertions(testTokens,variableNames):
 
 #TESTING
 #print(getVariableActions(testTokens))
-#print(getVariableId(testTokens))
+print(getVariableId(testTokens))
 #print(getVariableName(testTokens))
 #print(getTestCasesName(testTokens))
 variableNames = getVariableName(testTokens)

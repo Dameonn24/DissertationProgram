@@ -63,10 +63,12 @@ public class TestAppium {
     public void LoginSuccess() {
         WebElement username = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/usernameTextField"));
         username.sendKeys("dimbo");
+        username.click();
         WebElement password = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/passwordTextField"));
         password.sendKeys("dimbo");
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
+        password.sendKeys("dimbo");
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
         Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
     }
