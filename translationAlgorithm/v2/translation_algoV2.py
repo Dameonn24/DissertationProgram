@@ -38,7 +38,9 @@ def getVariables(testTokens, testCaseObjects):
     mainVariableArray = []
     currentVariableNames = []
     currentInitialisedVariableNames = []
+    currentAssertionNames=[]
     structure=[]
+    ids=[]
     
     #currentVariableIds = []
     #currentVariableActions = []
@@ -51,8 +53,14 @@ def getVariables(testTokens, testCaseObjects):
                     
                     # This section enters all the variable information into the current test case object and reset for the next test case
                     if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
+                        print(" before anything mainVariableArray:", mainVariableArray)
                         for b in range(len(mainVariableArray)):
-                            if mainVariableArray[b] in currentVariableNames:
+                            if "A*" in mainVariableArray[b]:
+                                assertName = mainVariableArray[b].replace("A*", "")
+                                currentAssertionNames.append(assertName)
+                                currentIndex= "A" + str(b)
+                                structure.append(currentIndex)
+                            elif mainVariableArray[b] in currentVariableNames:
                                 currentInitialisedVariableNames.append(mainVariableArray[b])
                                 currentIndex= "I" + str(b)
                                 structure.append(currentIndex)
@@ -60,18 +68,25 @@ def getVariables(testTokens, testCaseObjects):
                                 currentVariableNames.append(mainVariableArray[b])
                                 currentIndex= "V" + str(b)
                                 structure.append(currentIndex)
-                        '''
-                        print("\n mainVariableArray:", mainVariableArray, len(mainVariableArray))
+                        
+                        print("\n")
+                        print("mainVariableArray:", mainVariableArray, len(mainVariableArray))
                         print("currentVariableNames:", currentVariableNames, len(currentVariableNames))
+                        print("Ids:", ids, len(ids))
                         print("currentInitialisedVariableNames:", currentInitialisedVariableNames, len(currentInitialisedVariableNames))
+                        print("currentAssertionNames:", currentAssertionNames, len(currentAssertionNames))
                         print("structure:", structure, len(structure))
-                        '''
+                        
                         test_case.structure = structure
+                        
+                        #TODO: Create the variable objects and add them to the test case object
                         
                         mainVariableArray = []
                         currentVariableNames = []
                         currentInitialisedVariableNames = []
+                        currentAssertionNames=[]
                         structure=[]
+                        ids=[]
                         break
                     
                     # This section extracts the variable names
@@ -85,11 +100,32 @@ def getVariables(testTokens, testCaseObjects):
                             mainVariableArray=mainVariableArray[:a]+mainVariableArray[a+2:]
                     
                     # This section extracts the variable ids
-                    if testTokens[i].value in currentVariableNames:
-                        
+                    if testTokens[i].value in mainVariableArray:
+                        actualPath = ""
+                        while testTokens[i].value != ";":
+                            if testTokens[i].value == "id" and testTokens[i+1].value == "(":
+                                pathId = testTokens[i+2].value
+                                for k in range(len(pathId)):
+                                    if pathId[k] == "/":
+                                        while pathId[k] != "\"":
+                                            actualPath += pathId[k]
+                                            k+=1
+                                ids.append(actualPath[1:])
+                                break
+                            i+=1
                     
+                    #TODO: Extract the actions and action values for the variables
                     
-                    
+                    #TODO: Filter out the assertion names
+                    if testTokens[i].value == "Assert":
+                        while testTokens[i].value != ";":
+                            for vname in mainVariableArray:
+                                if testTokens[i].value == vname:
+                                    print(vname)
+                                    modified_vname = "A*" + vname
+                                    print(modified_vname)
+                                    currentAssertionNames.append(modified_vname)
+                            i+=1
     return testCaseObjects
 
 
@@ -103,9 +139,9 @@ testCaseObjects = getTestCaseNames(testTokens)
 variables = getVariables(testTokens, testCaseObjects)
 
 for test_case in testCaseObjects:
+    '''
     print("Test Name:", test_case.name)
     print("Structure:", test_case.structure)
-'''
     print("Variable Names:", test_case.variables)
     #print("Variable Ids:", test_case.variableIds)
     #print("Assertions:", test_case.assertions)

@@ -1,10 +1,10 @@
 class TestCase:
-    def __init__(self, name, structure, variables, initialisedVariables, assertions):
+    def __init__(self, name, structure): #, variables, initialisedVariables, assertions):
         self.name = name
         self.structure = structure
-        self.variables = variables
-        self.initialisedVariables = initialisedVariables
-        self.assertions = assertions
+        #self.variables = variables
+        #self.initialisedVariables = initialisedVariables
+        #self.assertions = assertions
     pass
 
 class Variable:
