@@ -77,7 +77,7 @@ public class TestAppium {
     public void LoginFailure() {
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
-        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
+        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(successMsg.getText(), "Please fill all the fields");
     }
 
@@ -95,7 +95,7 @@ public class TestAppium {
         el5.sendKeys("dimbopass");
         WebElement el6 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         el6.click();
-        WebElement el7 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
+        WebElement el7 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(el7.getText(), "Welcome dimbo!");
 
     }
