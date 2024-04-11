@@ -175,12 +175,13 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                                 if testTokens[i].value == vname:
                                     modified_vname = "A*" + vname
                                     mainVariableArray[mainVariableArray.index(vname)] = modified_vname
-                                    print(testTokens[i-1].value, testTokens[i].value, testTokens[i+1].value)
+                                    #print(testTokens[i-1].value, testTokens[i].value, testTokens[i+1].value)
                                     if testTokens[i+1].value == ".":
-                                        print("loop entered")
+                                        #print("loop entered")
                                         currentAssertionAction.append(testTokens[i+2].value)
                                         value=testTokens[i+6].value
                                         currentAssertionValue.append(value[1:-1])
+                            #TODO: Find the reason why its duplicating entries and fix it
                             for e in range (len(currentAssertionAction)-1):
                                 if currentAssertionAction[e] == currentAssertionAction[e+1]:
                                     currentAssertionAction.remove(currentAssertionAction[e+1])
@@ -188,7 +189,6 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                             i+=1
                     
                     #------------------------------------------
-                    #TODO: Extract assertion type and assertion value
                     
                     
                 

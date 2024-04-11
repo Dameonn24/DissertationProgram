@@ -97,6 +97,7 @@ public class TestAppium {
         el6.click();
         WebElement el7 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(el7.getText(), "Welcome dimbo!");
+        // Assert.assertEquals(el3.getText(), "dimbo");
 
     }
 
