@@ -69,7 +69,7 @@ public class TestAppium {
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
         password.sendKeys("dimbo");
-        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsg"));
+        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
     }
 
