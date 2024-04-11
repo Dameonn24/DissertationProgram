@@ -1,6 +1,6 @@
 import javalang
 import javalang.tokenizer
-from TestCase import TestCase, Variable, InitialisedVariable, Assertions
+from TestObjects import *
 
 def tokenize_java_file(file_name):
     alltokens = []
@@ -35,6 +35,7 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
     variableIdentifierKeywords = {'int', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'long', 'WebElement', 'val'}
     variablePathIdentifierKeywords = {'xpath', 'id'}
     actionKeywords = {'sendKeys', 'click'}
+    assertionKeywords = {'Assert', 'assert'}
     
     mainVariableArray = []
     currentVariableNames = []
@@ -45,6 +46,8 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
     ids=[]
     action=[]
     actionValue=[]
+    assertionType=[]
+    assertionValue=[]
     
     for test_case in testCaseObjects:
         for j in range(len(testTokens)):
@@ -154,7 +157,7 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                     
                     #------------------------------------------
                     #This section filter out the assertion names
-                    if testTokens[i].value == "Assert":
+                    if testTokens[i].value in assertionKeywords:
                         while testTokens[i].value != ";":
                             for vname in mainVariableArray:
                                 if testTokens[i].value == vname:
@@ -165,6 +168,7 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                     #------------------------------------------
                     #TODO: Extract assertion type and assertion value
                     
+                    
                 
     return testCaseObjects
 
@@ -172,6 +176,7 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
 
 
 # Example usage
+'''
 file_name = "appiumTests/AppiumTrialLevel3.java"
 alltokens = tokenize_java_file(file_name)
 testTokens = extract_test_cases(alltokens)
@@ -179,7 +184,7 @@ testCaseObjects = getTestCaseNames(testTokens)
 ajd = getVariablesAndAssertions(testTokens, testCaseObjects) #ajd = appium java decoder
 
 for test_case in testCaseObjects:
-    '''
+    
     print("Test Name:", test_case.name)
     print("Structure:", test_case.structure)
     print("Variable Names:", test_case.variables)
