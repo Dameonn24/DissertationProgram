@@ -62,13 +62,14 @@ public class TestAppium {
     @Test
     public void LoginSuccess() {
         WebElement username = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/usernameTextField"));
-        username.sendKeys("dimbo");
+        username.sendKeys("dimbousername");
         username.click();
+        Assert.assertEquals(username.getText(), "dimbousername");
         WebElement password = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/passwordTextField"));
-        password.sendKeys("dimbo");
+        password.sendKeys("dimbopassword");
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
-        password.sendKeys("dimbo");
+        password.sendKeys("dimbopasswordpt2");
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
     }
@@ -88,16 +89,16 @@ public class TestAppium {
         WebElement el2 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/emailTextField"));
         el2.sendKeys("dimbo@dimbo.com");
         WebElement el3 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/usernameTextField"));
-        el3.sendKeys("dimbo");
+        el3.sendKeys("dimbousername");
         WebElement el4 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/passwordTextField"));
         el4.sendKeys("dimbopass");
         WebElement el5 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/confirmpTextField"));
-        el5.sendKeys("dimbopass");
+        el5.sendKeys("dimbocpass");
         WebElement el6 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         el6.click();
         WebElement el7 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         Assert.assertEquals(el7.getText(), "Welcome dimbo!");
-        // Assert.assertEquals(el3.getText(), "dimbo");
+        Assert.assertEquals(el3.getText(), "dimboagain");
 
     }
 

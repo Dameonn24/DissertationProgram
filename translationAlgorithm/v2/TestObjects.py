@@ -1,5 +1,5 @@
 class TestCase:
-    def __init__(self, name, structure): #, variables, initialisedVariables, assertions):
+    def __init__(self, name, structure): #, variables, actions, assertions):
         self.name = name
         self.structure = structure
         #self.variables = variables
@@ -8,22 +8,21 @@ class TestCase:
     pass
 
 class Variable:
-    def __init__(self, name, vId, action, actionValue):
+    def __init__(self, name, vId):
         self.name = name
         self.vId = vId
-        self.action = action
-        self.actionValue = actionValue
     pass
 
-class InitialisedVariable:
+class Action:
     def __init__(self, name, action, actionValue):
         self.name = name
         self.action = action
         self.actionValue = actionValue
     pass
 
-class Assertions:
-    def __init__(self, assertion_type, assertion_action, assertion_value):
+class Assertion:
+    def __init__(self, name, assertion_type, assertion_action, assertion_value):
+        self.name = name
         self.assertion_type = assertion_type
         self.assertion_action = assertion_action
         self.assertion_value = assertion_value

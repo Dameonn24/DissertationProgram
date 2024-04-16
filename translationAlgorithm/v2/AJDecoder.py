@@ -31,24 +31,28 @@ def getTestCaseNames(testTokens):
             testCaseObjects.append(test_case)
     return testCaseObjects
 
-def getVariablesAndAssertions(testTokens, testCaseObjects):
+def ajdecoder(testTokens, testCaseObjects):
     variableIdentifierKeywords = {'int', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'long', 'WebElement', 'val'}
     variablePathIdentifierKeywords = {'xpath', 'id'}
     actionKeywords = {'sendKeys', 'click'}
     
-    
+    currindex = 0
     mainVariableArray = []
+    
     currentVariableNames = []
-    currentInitialisedVariableNames = []
+    currentVariableIds=[]
+    
+    currentActionVariableNames = []
+    currentActionVariableActions=[]
+    currentActionVariableValues=[]
+    
     currentAssertionNames=[]
-    currrentAssertionIds =[]
-    structure=[]
-    ids=[]
-    action=[]
-    actionValue=[]
     currentAssertionType=[]
     currentAssertionValue=[]
     currentAssertionAction=[]
+    
+    structure=[]
+    
     
     for test_case in testCaseObjects:
         for j in range(len(testTokens)):
@@ -59,6 +63,7 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                     # This section enters all the variable information into the current test case object and reset for the next test case
                     if (testTokens[i].value == ";" and i == len(testTokens) - 1) or (testTokens[i].value == ";" and testTokens[i+1].value == "@"):
                         
+                        '''
                         # This section filters out any unnecessary duplicates -- primarily formatting
                         for a in range(len(mainVariableArray)-2): 
                             if (a+2 < len(mainVariableArray)) and (mainVariableArray[a] == mainVariableArray[a+1]) and (mainVariableArray[a] == mainVariableArray[a+2]):
@@ -67,9 +72,10 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                             if "A*" in mainVariableArray[a] and "A*" in mainVariableArray[a+1]:
                                 mainVariableArray=mainVariableArray[:a]+mainVariableArray[a+1:]
                         
+                        
                         # This section distributes the variables into their respective categories and extracts a structure
                         # This section splits between variables and initialised variables
-                        for b in range(len(mainVariableArray)):
+                        for b in range(len(currentActionVariableNames)):
                             if mainVariableArray[b] in currentVariableNames:
                                 currentInitialisedVariableNames.append(mainVariableArray[b])
                                 currentIndex= "I" + str(currentInitialisedVariableNames.index(mainVariableArray[b]))
@@ -89,16 +95,17 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                                 currentVariableNames.remove(currentVariableNames[c])
                                 ids.remove(ids[c])
                                 structure[d] = "A" + str(currentAssertionNames.index(assertName))
+                        '''
                                 
                         #Testing output statements
-                        print("mainVariableArray:", mainVariableArray, len(mainVariableArray))
+                        #print("mainVariableArray:", mainVariableArray, len(mainVariableArray))
                         print("currentVariableNames:", currentVariableNames, len(currentVariableNames))
-                        print("Ids:", ids, len(ids))
-                        print("currentInitialisedVariableNames:", currentInitialisedVariableNames, len(currentInitialisedVariableNames))
-                        print("Actions:", action, len(action))
-                        print("Action Values:", actionValue, len(actionValue))
+                        print("Ids:", currentVariableIds, len(currentVariableIds))
+                        print("currentActionVariableNames:", currentActionVariableNames, len(currentActionVariableNames))
+                        print("currentActionVariableActions:", currentActionVariableActions, len(currentActionVariableActions))
+                        print("currentActionVariableValues:", currentActionVariableValues, len(currentActionVariableValues))
                         print("currentAssertionNames:", currentAssertionNames, len(currentAssertionNames))
-                        print("currentAssertionIds:", currrentAssertionIds, len(currrentAssertionIds))
+                        #print("currentAssertionIds:", currrentAssertionIds, len(currrentAssertionIds))
                         print("currentAssertionType:", currentAssertionType, len(currentAssertionType))
                         print("currentAssertionAction:", currentAssertionAction, len(currentAssertionAction))
                         print("currentAssertionValue:", currentAssertionValue, len(currentAssertionValue))
@@ -110,17 +117,20 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                         #TODO: Create the variable objects and add them to the test case object
                         
                         mainVariableArray = []
+    
                         currentVariableNames = []
-                        currentInitialisedVariableNames = []
+                        currentVariableIds=[]
+                        
+                        currentActionVariableNames = []
+                        currentActionVariableActions=[]
+                        currentActionVariableValues=[]
+                        
                         currentAssertionNames=[]
-                        currrentAssertionIds =[]
-                        structure=[]
-                        ids=[]
-                        action=[]
-                        actionValue=[]
                         currentAssertionType=[]
                         currentAssertionValue=[]
                         currentAssertionAction=[]
+                        
+                        structure=[]
                         
                         
                         break
@@ -128,38 +138,41 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                     #------------------------------------------
                     # This section extracts the variable names
                     if (testTokens[i].value in variableIdentifierKeywords and testTokens[i+1].value.isidentifier()):
-                        mainVariableArray.append(testTokens[i+1].value)
-                    elif (testTokens[i].value in mainVariableArray): #incase there are variables that perform multiple actions
-                        mainVariableArray.append(testTokens[i].value)
-                    
+                        currentVariableNames.append(testTokens[i+1].value)
+                        currindex=currentVariableNames.index(testTokens[i+1].value)
+                        structure.append("V" + str(currindex))
+                    elif (testTokens[i].value in currentVariableNames): #incase there are variables that perform multiple actions
+                        currentActionVariableNames.append(testTokens[i].value)
+                        currindex=currentActionVariableNames.index(testTokens[i].value)
+                        structure.append("AV" + str(currindex))
                     #------------------------------------------
                     # This section extracts the variable ids
-                    if testTokens[i].value in mainVariableArray:
+                    if testTokens[i].value in currentVariableNames:
                         actualPath = ""
                         while testTokens[i].value != ";":
-                            if testTokens[i].value == "id" and testTokens[i+1].value == "(":
+                            if testTokens[i].value in variablePathIdentifierKeywords and testTokens[i+1].value == "(":
                                 pathId = testTokens[i+2].value
                                 for k in range(len(pathId)):
                                     if pathId[k] == "/":
                                         while pathId[k] != "\"":
                                             actualPath += pathId[k]
                                             k+=1
-                                ids.append(actualPath[1:])
+                                currentVariableIds.append(actualPath[1:])
                                 break
                             i+=1
                     
                     #------------------------------------------
                     #This sections extract the actions and action values for the variables
                     i=i-1
-                    if testTokens[i].value in mainVariableArray:
+                    if testTokens[i].value in currentActionVariableNames:
                         while testTokens[i].value != ";":
                             if testTokens[i].value in actionKeywords:
-                                action.append(testTokens[i].value)
+                                currentActionVariableActions.append(testTokens[i].value)
                                 if testTokens[i].value == "click":
-                                    actionValue.append(" ")
+                                    currentActionVariableValues.append(" ")
                                 else:
                                     currActionValue = testTokens[i+2].value
-                                    actionValue.append(currActionValue[1:-1])
+                                    currentActionVariableValues.append(currActionValue[1:-1])
                             i+=1
                             
                     
@@ -170,23 +183,34 @@ def getVariablesAndAssertions(testTokens, testCaseObjects):
                     if testTokens[i].value in assertionKeywords:
                         while testTokens[i].value != ";":
                             if testTokens[i].value in assertionTypes:
+                                #print("before currentAssertionType: ", currentAssertionType)
                                 currentAssertionType.append(testTokens[i].value)
-                            for vname in mainVariableArray:
+                                #print("after currentAssertionType: ",currentAssertionType)
+                            for vname in currentActionVariableNames:
                                 if testTokens[i].value == vname:
-                                    modified_vname = "A*" + vname
-                                    mainVariableArray[mainVariableArray.index(vname)] = modified_vname
+                                    currentAssertionNames.append(vname)
+                                    currentActionVariableNames.remove(currentActionVariableNames[currentActionVariableNames.index(vname)])
+                                    currindex=currentAssertionNames.index(vname)
+                                    structure.append("A" + str(currindex))
                                     #print(testTokens[i-1].value, testTokens[i].value, testTokens[i+1].value)
                                     if testTokens[i+1].value == ".":
-                                        #print("loop entered")
+                                        #print("-- loop entered -- \n")
+                                        #print("before currentAssertionAction: ", currentAssertionAction)
+                                        #print("before currentAssertionValue: ", currentAssertionValue)
                                         currentAssertionAction.append(testTokens[i+2].value)
                                         value=testTokens[i+6].value
                                         currentAssertionValue.append(value[1:-1])
-                            #TODO: Find the reason why its duplicating entries and fix it
-                            for e in range (len(currentAssertionAction)-1):
-                                if currentAssertionAction[e] == currentAssertionAction[e+1]:
+                                        #print("after currentAssertionAction: ", currentAssertionAction)
+                                        #print("after currentAssertionValue: ", currentAssertionValue, "\n")
+                            
+                            '''            
+                            for e in range(len(currentAssertionAction)-1):
+                                if currentAssertionAction[e] == currentAssertionAction[e+1] and currentAssertionValue[e] == currentAssertionValue[e+1]:
                                     currentAssertionAction.remove(currentAssertionAction[e+1])
                                     currentAssertionValue.remove(currentAssertionValue[e+1])
-                            i+=1
+                            '''
+                            
+                            i += 1
                     
                     #------------------------------------------
                     
