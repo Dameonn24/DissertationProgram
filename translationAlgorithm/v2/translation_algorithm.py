@@ -4,7 +4,7 @@ from TestObjects import *
 from AJDecoder import *
 from EKEncoder import *
 
-file_name = "testingMaterial/appiumTests/AppiumTrialLevel3.java"
+file_name = "testingMaterial/appiumTests/AppiumTrialLevel4.java"
 alltokens = tokenize_java_file(file_name)
 testTokens = extract_test_cases(alltokens)
 testCaseObjects = getTestCaseNames(testTokens)

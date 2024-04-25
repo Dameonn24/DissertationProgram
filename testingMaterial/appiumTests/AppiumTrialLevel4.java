@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class AppiumTrialLevel2 {
+public class AppiumTrialLevel1 {
     private AndroidDriver driver;
 
     @Before
@@ -36,24 +36,19 @@ public class AppiumTrialLevel2 {
         caps.setCapability("connectHardwareKeyboard", true);
 
         AndroidDriver driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
-
-    }
-
-    // START OF TESTS
+    
+    //START OF TESTS
 
     @Test
-    public void LoginPageSuccess() {
-        WebElement username = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/usernameTextField"));
-        username.sendKeys("dimbo");
-        WebElement password = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/passwordTextField"));
-        password.sendKeys("dimbo");
-        WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
-        submit.click();
-        WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
-        WebElement successAssertMsg = driver
-                .findElement(AppiumBy.xpath("//android.widget.TextView[@text=\"welcome dimbo!\"]"));
-        Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
-        Assert.assertEquals(successAssertMsg.getText(), "under the sea");
+    public void SingleButton() {
+        WebElement button = driver.findElement(AppiumBy.id("dfonfj/button"));
+        button.click();
+        WebElement msg = driver.findElement(AppiumBy.id("fdfafd/fsaf/msg"));
+        Assert.assertEquals(msg.getText(), "Button has been pressed 1 time");
+        button.click();
+        Assert.assertEquals(msg.getText(), "Button has been pressed 2 times");
+        button.click();
+        Assert.assertEquals(msg.getText(), "Button has been pressed 3 times");
     }
 
     // END OF TESTS
