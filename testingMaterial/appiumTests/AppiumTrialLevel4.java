@@ -41,9 +41,9 @@ public class AppiumTrialLevel1 {
 
     @Test
     public void SingleButton() {
-        WebElement button = driver.findElement(AppiumBy.id("dfonfj/button"));
+        WebElement button = driver.findElement(AppiumBy.id("dfonfj/buttonID"));
+        WebElement msg = driver.findElement(AppiumBy.id("fdfafdfsaf/msgID"));
         button.click();
-        WebElement msg = driver.findElement(AppiumBy.id("fdfafd/fsaf/msg"));
         Assert.assertEquals(msg.getText(), "Button has been pressed 1 time");
         button.click();
         Assert.assertEquals(msg.getText(), "Button has been pressed 2 times");
