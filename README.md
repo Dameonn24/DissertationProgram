@@ -1,5 +1,5 @@
 
-# Automatic Translation of Appium Test Cases to Espresso Test Cases for an Android Mobile Application
+# Appium to Espresso: Automatic Translation of UI Test Cases for an Android Mobile Application
 
 This is my Dissertation Project. It works by taking the Appium test file that needs to be translated (Source file) and then dissecting it into its key test information using the Appium - Java Decoder (AJD). 
 
