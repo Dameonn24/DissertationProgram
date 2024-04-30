@@ -1,3 +1,4 @@
+#APPIUM JAVA DECODER OBJECTS
 class TestCase:
     def __init__(self, name, structure , variables, actions, assertions):
         self.name = name
@@ -22,9 +23,37 @@ class Action:
     pass
 
 class Assertion:
-    def __init__(self, name, assertion_type, assertion_action, assertion_value):
+    def __init__(self, name, assertionType, assertionAction, assertionValue):
         self.name = name
-        self.assertion_type = assertion_type
-        self.assertion_action = assertion_action
-        self.assertion_value = assertion_value
+        self.assertionType = assertionType
+        self.assertionAction = assertionAction
+        self.assertionValue = assertionValue
+    pass
+
+#TRANSLATION ALGORITHM OBJECTS
+class TranslatedTestCase:
+    def __init__(self, name, structure, tVariables, tActions, tAssertions):
+        self.name = name
+        self.structure = structure
+        self.tVariables = tVariables
+        self.tActions = tActions
+        self.tAssertions = tAssertions
+    pass
+
+class TranslatedVariables:
+    def __init__(self, name, vId):
+        self.name = name
+        self.vId = vId
+    pass
+
+class TranslatedActions:
+    def __init__(self, name, action):
+        self.name = name
+        self.action = action
+    pass
+
+class TranslatedAssertions:
+    def __init__(self, name, assertion):
+        self.name = name
+        self.assertion = assertion
     pass

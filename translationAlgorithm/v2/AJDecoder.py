@@ -191,7 +191,7 @@ def ajdecoder(allTestTokens, testCaseObjects):
             test_case.assertions.append(assertion)
         test_case.structure = structure
         
-        #''' Object Debugging Print Statements
+        ''' Object Debugging Print Statements
         for test_case in testCaseObjects:
             print("Test Case Name:", test_case.name)
             print("Structure:", test_case.structure)
@@ -205,7 +205,7 @@ def ajdecoder(allTestTokens, testCaseObjects):
             for assertion in test_case.assertions:
                 print(assertion.name, assertion.assertion_type, assertion.assertion_action, assertion.assertion_value)
             print("\n")
-        #'''
+        '''
         #------------------------------------------
         #This section clears out all variables, ready for the next test case
         testTokens = []
