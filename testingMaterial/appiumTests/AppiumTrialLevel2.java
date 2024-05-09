@@ -52,8 +52,8 @@ public class AppiumTrialLevel2 {
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
         WebElement successAssertMsg = driver
                 .findElement(AppiumBy.xpath("//android.widget.TextView[@text=\"welcome dimbo!\"]"));
-        Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
-        Assert.assertEquals(successAssertMsg.getText(), "under the sea");
+        Assert.assertEquals("welcome dimbo!", successMsg.getText());
+        Assert.assertEquals("under the sea", successAssertMsg.getText());
     }
 
     // END OF TESTS

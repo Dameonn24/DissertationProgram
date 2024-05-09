@@ -2,6 +2,7 @@ import javalang
 import javalang.tokenizer
 from TestObjects import *
 
+testClassName = ""
 def tokenize_java_file(file_name):
     alltokens = []
     with open(file_name, 'r') as file:
@@ -13,8 +14,18 @@ def tokenize_java_file(file_name):
 
 def extract_test_cases(alltokens):
     alltestTokens = []
+    package = ""
     flag = False 
     for i in range (len(alltokens)):
+        if alltokens[i].value == "package":
+            while alltokens[i+1].value != ";":
+                package = package + str(alltokens[i+1].value)
+                i+=1
+            #print("Package:", package)
+    for i in range (len(alltokens)):
+        if alltokens[i].value == "public" and alltokens[i+1].value == "class":
+            testClassName = alltokens[i+2].value
+            #print("Test File Name:", testClassName)
         if alltokens[i].value == "@" and alltokens[i+1].value == "Test":
             flag = True
         if alltokens[i].value == "}" and flag:
@@ -22,7 +33,7 @@ def extract_test_cases(alltokens):
             flag = False
         if flag == True:
             alltestTokens.append(alltokens[i])
-    return alltestTokens
+    return alltestTokens, testClassName, package
 
 def getTestCaseNames(testTokens):
     testCaseObjects = [] # array of all the test cases in the Appium file
@@ -32,7 +43,7 @@ def getTestCaseNames(testTokens):
             testCaseObjects.append(test_case)
     return testCaseObjects
 
-def ajdecoder(allTestTokens, testCaseObjects):
+def ajdecoder(allTestTokens, testCaseObjects, testClassName, package):
     #Keywords
     variableIdentifierKeywords = {'int', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'long', 'WebElement', 'val'}
     assertionKeywords = {'Assert', 'assert'}
@@ -40,6 +51,9 @@ def ajdecoder(allTestTokens, testCaseObjects):
     assertionActionKeywords = {'getText', 'getAttribute', 'isEnabled', 'isSelected', 'isDisplayed', 'getSize', 'getLocation', 'getTagName', 'getCssValue'}
     variablePathIdentifierKeywords = {'xpath', 'id'}
     actionKeywords = {'sendKeys', 'click'}
+    
+    testCaseFile = TestFile(testClassName, package, testCaseObjects)
+    
     for test_case in testCaseObjects:
         testTokens = []
         startIndex = None
@@ -149,11 +163,11 @@ def ajdecoder(allTestTokens, testCaseObjects):
                 #print("Token:", token.value)
                 if testTokens[i+1].value == "." and testTokens[i+2].value in assertionTypeKeywords:
                     assertionTypes.append(testTokens[i+2].value)
+                    assertionValues.append(testTokens[i+4].value[1:-1])
                 while testTokens[i].value != ";":
                     if testTokens[i].value in assertionNames:
                         if testTokens[i+1].value == "." and testTokens[i+2].value in assertionActionKeywords:
                             assertionActions.append(testTokens[i+2].value)
-                            assertionValues.append(testTokens[i+6].value[1:-1])
                     i+=1
         #print("Assertion Names:", assertionNames)
         #print("Assertion Types:", assertionTypes)
@@ -164,7 +178,8 @@ def ajdecoder(allTestTokens, testCaseObjects):
         #------------------------------------------
         #This section creates the objects
         
-        ''' Pre-Object Debugging Print Statements
+        '''
+        #Pre-Object Debugging Print Statements
         print("Test Case Name:", test_case.name)
         print("Structure:", structure)
         print("Variable Names:", variableNames, len(variableNames))
@@ -181,17 +196,21 @@ def ajdecoder(allTestTokens, testCaseObjects):
         '''
         
         for i in range(len(variableNames)):
-            variable = Variable(variableNames[i], variableIdType[i], variableIds[i])
+            variable = Variable(str(variableNames[i]), str(variableIdType[i]), str(variableIds[i]))
             test_case.variables.append(variable)  
         for i in range(len(actionNames)):
-            action = Action(actionNames[i], actionActions[i], actionValues[i])
+            action = Action(str(actionNames[i]), str(actionActions[i]), str(actionValues[i]))
             test_case.actions.append(action)
         for i in range(len(assertionNames)):
-            assertion = Assertion(assertionNames[i], assertionTypes[i], assertionActions[i], assertionValues[i])
+            assertion = Assertion(str(assertionNames[i]), str(assertionTypes[i]), str(assertionActions[i]), str(assertionValues[i]))
             test_case.assertions.append(assertion)
         test_case.structure = structure
         
-        ''' Object Debugging Print Statements
+        '''
+        #Object Debugging Print Statements
+        print("Test File Name:", testCaseFile.name)
+        print("Package:", testCaseFile.package)
+        print("Test Cases:", testCaseFile.testCases)
         for test_case in testCaseObjects:
             print("Test Case Name:", test_case.name)
             print("Structure:", test_case.structure)
@@ -203,9 +222,10 @@ def ajdecoder(allTestTokens, testCaseObjects):
                 print(action.name, action.action, action.actionValue)
             print("Assertions:")
             for assertion in test_case.assertions:
-                print(assertion.name, assertion.assertion_type, assertion.assertion_action, assertion.assertion_value)
+                print(assertion.name, assertion.assertionType, assertion.assertionAction, assertion.assertionValue)
             print("\n")
         '''
+        
         #------------------------------------------
         #This section clears out all variables, ready for the next test case
         testTokens = []
@@ -227,4 +247,4 @@ def ajdecoder(allTestTokens, testCaseObjects):
         assertionActions = []
         assertionValues = []
         
-    return testCaseObjects
+    return testCaseFile

@@ -71,7 +71,7 @@ public class TestAppium {
         submit.click();
         password.sendKeys("dimbopasswordpt2");
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
-        Assert.assertEquals(successMsg.getText(), "welcome dimbo!");
+        Assert.assertEquals("welcome dimbo!", successMsg.getText());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class TestAppium {
         WebElement submit = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         submit.click();
         WebElement successMsg = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
-        Assert.assertEquals(successMsg.getText(), "Please fill all the fields");
+        Assert.assertEquals("Please fill all the fields", successMsg.getText());
     }
 
     @Test
@@ -97,8 +97,8 @@ public class TestAppium {
         WebElement el6 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/submitButton"));
         el6.click();
         WebElement el7 = driver.findElement(AppiumBy.id("com.example.dissertationdummyapp:id/successMsgID"));
-        Assert.assertEquals(el7.getText(), "Welcome dimbo!");
-        Assert.assertEquals(el3.getText(), "dimboagain");
+        Assert.assertEquals("Welcome dimbo!", el7.getText());
+        Assert.assertEquals("dimbo again", el3.getText());
 
     }
 

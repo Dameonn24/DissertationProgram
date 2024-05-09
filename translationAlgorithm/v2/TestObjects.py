@@ -1,4 +1,10 @@
 #APPIUM JAVA DECODER OBJECTS
+class TestFile:
+    def __init__(self, name, package, testCases):
+        self.name = name
+        self.package = package
+        self.testCases = testCases
+    pass
 class TestCase:
     def __init__(self, name, structure , variables, actions, assertions):
         self.name = name
