@@ -45,21 +45,3 @@ class TranslatedTestCase:
         self.tActions = tActions
         self.tAssertions = tAssertions
     pass
-
-class TranslatedVariables:
-    def __init__(self, name, vId):
-        self.name = name
-        self.vId = vId
-    pass
-
-class TranslatedActions:
-    def __init__(self, name, action):
-        self.name = name
-        self.action = action
-    pass
-
-class TranslatedAssertions:
-    def __init__(self, name, assertion):
-        self.name = name
-        self.assertion = assertion
-    pass

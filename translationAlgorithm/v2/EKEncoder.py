@@ -26,6 +26,7 @@ class Translated"""+translatedTestCaseFile.name+""" {
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)"""
     translatedTestCaseObjects = translatedTestCaseFile.testCases
+
     for testCase in translatedTestCaseObjects:
         espressoCode += "\n\n    @Test\n    fun " + testCase.name + "(){\n"
         for i, item in enumerate(testCase.structure):
@@ -33,13 +34,13 @@ class Translated"""+translatedTestCaseFile.name+""" {
             lineType = match.group(1)
             index = int(match.group(2))
             if lineType == "V":
-                currentLine = "        val "+ testCase.tVariables[index].name + " = onView(" + testCase.tVariables[index].vId + ")\n"
+                currentLine = "        val "+ testCase.tVariables[index].name + " = onView(" + testCase.tVariables[index].vIdType + testCase.tVariables[index].vId  + "))\n"
                 espressoCode += currentLine
             elif lineType == "AV":
-                currentLine = "        " + testCase.tActions[index].name + ".perform(" + testCase.tActions[index].action + ")\n"
+                currentLine = "        " + testCase.tActions[index].name + ".perform(" + testCase.tActions[index].action.format(testCase.tActions[index].actionValue) + ")\n"
                 espressoCode += currentLine
             elif lineType == "A":
-                currentLine = "        " + testCase.tAssertions[index].name + ".check(" + testCase.tAssertions[index].assertion + ")\n"
+                currentLine = "        " + testCase.tAssertions[index].name + ".check(" + testCase.tAssertions[index].assertionType + testCase.tAssertions[index].assertionAction + testCase.tAssertions[index].assertionValue + ")))\n"
                 espressoCode += currentLine
         espressoCode += "    }"
     espressoCode += "\n}"

@@ -33,7 +33,7 @@ class TranslatedAppiumTrialLevel2 {
         submit.perform(click())
         val successMsg = onView(withId(R.id.successMsgID))
         val successAssertMsg = onView(withText("welcome dimbo!"))
-        successMsg.check(matches(withText("welcome dimbo!")))
-        successAssertMsg.check(matches(withText("under the sea")))
+        successMsg.check(matches(withText("welcome dimbo!)))
+        successAssertMsg.check(matches(withText("under the sea)))
     }
 }

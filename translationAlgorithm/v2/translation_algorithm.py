@@ -34,15 +34,20 @@ translatedTestCaseObjects = []
 ajdTestCases = decodedTestFile.testCases
 for testCase in ajdTestCases:
     translatedTestCaseName = testCase.name[0].lower()+testCase.name[1:] #Converting the first letter of the test case name to lowercase
+    #testCase.name = testCase.name[0].lower()+testCase.name[1:] #Converting the first letter of the test case name to lowercase
     translatedTestCase = TranslatedTestCase(translatedTestCaseName, testCase.structure, [], [], [])
     translatedTestCaseObjects.append(translatedTestCase)
     
     tNames = []
+    tVIdTypes=[]
     tIds = []
     tActionNames = []
     tActionActions = []
+    tActionValues = []
     tAssertionNames = []
+    tAssertionTypes = []
     tAssertionActions = []
+    tAssertionValues = []
     #print("Test Case Name:", testCase.name)
     
     #Translating Variables
@@ -51,7 +56,8 @@ for testCase in ajdTestCases:
         #print("Variable Name:", variable.name)
         #print("Variable Type:", variable.vIdType)
         #print("Variable IdType:", variable.vIdType)
-        currentId  = getTranslations(variable.vIdType)
+        #currentId  = getTranslations(variable.vIdType)
+        tVIdType = getTranslations(variable.vIdType)
         if variable.vIdType == "xpath":
             #print("Variable Id:", variable.vId)
             for i in range(len(variable.vId)):
@@ -62,38 +68,41 @@ for testCase in ajdTestCases:
             tVariableId = tVariableId[:-2]+"\""
         else:
             tVariableId = variable.vId
-        currentId = currentId + tVariableId+ ")"
+        #currentId = currentId + tVariableId+ ")"
         tNames.append(variable.name)
-        tIds.append(currentId)
-    
+        tVIdTypes.append(tVIdType)
+        tIds.append(tVariableId)
+
+        
     #Translating Actions
     for action in testCase.actions:
-        currentAction = getTranslations(action.action).format(action.actionValue)
         tActionNames.append(action.name)
-        tActionActions.append(currentAction)
-    
+        tActionActions.append(getTranslations(action.action))
+        tActionValues.append(action.actionValue)
+
+        
     #Translating Assertions
     for assertion in testCase.assertions:
-        currentAssertion = getTranslations(assertion.assertionType) + getTranslations(assertion.assertionAction) + assertion.assertionValue + "\"))"
         tAssertionNames.append(assertion.name)
-        tAssertionActions.append(currentAssertion)
-    
+        tAssertionTypes.append(getTranslations(assertion.assertionType))
+        tAssertionActions.append(getTranslations(assertion.assertionAction))
+        tAssertionValues.append(assertion.assertionValue)
+        
     #Creating Translated Test Case
-    
     for i in range(len(tNames)):
         #print("Translated Variable Name:", tNames[i])
         #print("Translated Variable Id:", tIds[i])
-        tVariable = TranslatedVariables(tNames[i], tIds[i])
+        tVariable = Variable(tNames[i], tVIdTypes[i], tIds[i])
         translatedTestCase.tVariables.append(tVariable)
     for i in range(len(tActionNames)):
         #print("Translated Action Name:", tActionNames[i])
         #print("Translated Action Action:", tActionActions[i])
-        tAction = TranslatedActions(tActionNames[i], tActionActions[i])
+        tAction = Action(tActionNames[i], tActionActions[i], tActionValues[i])
         translatedTestCase.tActions.append(tAction)
     for i in range(len(tAssertionNames)):
         #print("Translated Assertion Name:", tAssertionNames[i])
         #print("Translated Assertion Action:", tAssertionActions[i])
-        tAssertion = TranslatedAssertions(tAssertionNames[i], tAssertionActions[i])
+        tAssertion = Assertion(tAssertionNames[i], tAssertionTypes[i], tAssertionActions[i], tAssertionValues[i])
         translatedTestCase.tAssertions.append(tAssertion)
 translatedTestCaseFile = TestFile(decodedTestFile.name, decodedTestFile.package, translatedTestCaseObjects) #Creating the new testcase file 
 
@@ -114,10 +123,10 @@ for item in translatedTestCaseObjects:
     print("\n")
 '''
 
+
 #-----------------------------
 
 espressoCode = ekencoder(translatedTestCaseFile) #eke = espresso kotlin encoder
-
 #outputFile = "/Users/dimashafernando/AndroidStudioProjects/DissertationDummyApp2/app/src/androidTest/java/com/example/dissertationdummyapp/Translated"+decodedTestFile.name+"EspressoTest.kt" #CHANGE THE OUTPUT FILE HERE
 outputFile = "testingMaterial/espressoTests/Translated"+decodedTestFile.name+"KotlinTest.kt" #For testing purposes
 with open(outputFile, 'w+') as file:
