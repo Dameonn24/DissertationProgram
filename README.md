@@ -32,19 +32,23 @@ Version 2 contains two files:
 
 ## Deployment
 
+### Version 2
+To deploy this project
+1. Open the project in your favourite IDE (e.g. Visual Studio Code)
+2. Open the file translation_algorithm.py (found in ```DissertationProgram/translationAlgorithm/v2/translation_algorithm```)
+3. Change the path to the input file of your choice (```Line 9 ```)
+4. Change the path to the target location of your choice. Only change the destination path and not the file name (```Line 131```)
+5. Run the script and enjoy!!
+
+### Version 1
 To deploy this project
 
 Open it in your IDE (e.g. Visual Studio Code) and run the script as a normal Python file. 
 
-To check that translation_algorithm.py (Version 1) is properly working, go to line 259 and change the file name (in this case "translatedCodev5.kt") to whatever you want. 
+To check that translation_algorithm.py (```translationAlgorithm/v1/translation_algorithm.py```) is properly working, go to line 259 and change the file name (in this case "translatedCodev5.kt") to whatever you want. 
 
 ```
 outputFile = "espressoTests/translatedCodev5.kt"
-
 ```
 
 If you run the script with a new file name, it should appear in your espressoTests folder. 
-
-Version 2 is currently in development, right now (as of 11/04/2024) it will not produce an espresso file.  
-
-To run Version 2, go to translation_algoV2.py and run it like a normal Python script.
