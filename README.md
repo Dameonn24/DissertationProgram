@@ -35,9 +35,9 @@ Version 2 contains two files:
 ### Version 2
 To deploy this project
 1. Open the project in your favourite IDE (e.g. Visual Studio Code)
-2. Open the file translation_algorithm.py (found in ```DissertationProgram/translationAlgorithm/v2/translation_algorithm```)
-3. Change the path to the input file of your choice (```Line 9 ```)
-4. Change the path to the target location of your choice. Only change the destination path and not the file name (```Line 131```)
+2. Open the file A2E.py (found in ```DissertationProgram/translationAlgorithm/v2/A2E.py```)
+3. Change the path to the input file of your choice (```Line 10 ```)
+4. Change the path to the target location of your choice. Only change the destination path and not the file name (```Line 19```)
 5. Run the script and enjoy!!
 
 ### Version 1
