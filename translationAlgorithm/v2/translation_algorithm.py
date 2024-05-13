@@ -128,7 +128,8 @@ for item in translatedTestCaseObjects:
 
 espressoCode = ekencoder(translatedTestCaseFile) #eke = espresso kotlin encoder
 #outputFile = "/Users/dimashafernando/AndroidStudioProjects/DissertationDummyApp2/app/src/androidTest/java/com/example/dissertationdummyapp/Translated"+decodedTestFile.name+"EspressoTest.kt" #CHANGE THE OUTPUT FILE HERE
-outputFile = "testingMaterial/espressoTests/Translated"+decodedTestFile.name+"KotlinTest.kt" #For testing purposes
+outputFileName = "Translated"+decodedTestFile.name+"KotlinTest.kt"
+outputFile = "testingMaterial/espressoTests/"+outputFileName #For testing purposes
 with open(outputFile, 'w+') as file:
     file.writelines(espressoCode)
 
