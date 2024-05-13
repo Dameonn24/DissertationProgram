@@ -2,7 +2,7 @@ import javalang
 import javalang.tokenizer
 from TestObjects import *
 from AJDecoder import *
-from translation_algorithm import *
+from TA import *
 from EKEncoder import *
 import re
 
