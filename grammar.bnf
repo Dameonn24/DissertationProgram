@@ -1,0 +1,34 @@
+#Test File Object Definitions
+<package> ::= "package" <packageName> ";"
+<packageName> ::= <identifier> "." <identifier> "." <identifier>
+
+#Test Case Object Definitions
+<testCase> ::= "public void" <testCaseName> "(){"
+<testCaseName> ::= <identifier>
+
+#Variable Object Definitions
+<variable> ::= 
+    <varInitialiser> <variableName> = 
+    "driver.findElement(AppiumBy." <variableIdType> "(\"" <packageName> ":" <variableIdType> "/" <variableId> "\"));" |
+    <varInitialiser> <variableName> = 
+    "driver.findElement(AppiumBy." <variableIdType> "(\"" <identifier> "));"
+<varInitialiser> ::= "WebElement" | "val"
+<variableName> ::= <identifier>
+<variableIdType> ::= "id" | "xpath"
+<variableId> ::= <identifier>
+
+#Action Object Definitions
+<action> ::= <variableName> "." <actionType> "(" <actionValue> ");"
+<actionType> ::= "click" | "sendKeys"
+<actionValue> ::= <identifier>
+
+#Assertion Object Definitions
+<assertion> ::= "Assert." <assertionType> "(" <assertionValue> "," <variableName> "." <assertionAction> "());"
+<assertionType> ::= "assertEquals"
+<assertionValue> ::= <identifier>
+<assertionAction> ::= "getText"
+
+#----
+<identifier> ::= [-A-Za-z0-9_]+
+
+
