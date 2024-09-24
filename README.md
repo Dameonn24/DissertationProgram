@@ -24,7 +24,7 @@ Version 1 runs the AJD, TA and EKE all in one script.
 
 In version 2, I am trying to create a class called "TestCase" that creates a test case object for each test case in the source file.
 
-Version 2 contains two files:  
+Version 2 contains the following files:  
     1. TestObject.py - this holds the classes for TestCase, Variable, InitialisedVariable and Assertions.  
     2. AJDecoder.py - this holds all the code for the Appium-Java Decoder. This portion of the code focuses on dissecting the Appium test cases into its core data to be passed into the translation algorithm.  
     3. translation_algorithm.py - this holds the java-to-kotlin translations.  
